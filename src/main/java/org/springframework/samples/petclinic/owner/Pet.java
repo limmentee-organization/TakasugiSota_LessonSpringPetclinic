@@ -39,7 +39,7 @@ public class Pet extends NamedEntity {
 		return this.birthDate;
 	}
 
-	public void serBirthDate(LocalDate birthDate) {
+	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 
