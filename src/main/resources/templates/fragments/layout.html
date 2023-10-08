@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- フラグメント定義 -->
 <html th:fragment="layout (template, menu)">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -30,9 +31,10 @@
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="main-navbar" style>
-
+				<!-- menuItemフラグメントの定義　th:remove="all"で関数定義のみ実装し、画面に反映させないようにしている？ -->
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0" th:remove="all">
 
+					<!-- (リンク,アクティブメニュー,タイトル,クラス,画面に表示させるテキスト -->
 					<li th:fragment="menuItem (link,active,title,glyph,text)"
 						th:class="nav-item"><a
 						th:class="${active==menu ? 'nav-link active' : 'nav-link'}"
@@ -43,24 +45,29 @@
 
 				</ul>
 
+				<!-- ヘッダーメニューの作成 -->
 				<ul class="nav navbar-nav me-auto">
 
+					<!-- menuItemフラグメントに要素を変換 -->
 					<li
 						th:replace="~{::menuItem ('/','home','home page','home','Home')}">
 						<span class="fa fa-home" aria-hidden="true"></span> <span>Home</span>
 					</li>
 
+					<!-- menuItemフラグメントに要素を変換 -->
 					<li
 						th:replace="~{::menuItem ('/owners/find','owners','find owners','search','Find owners')}">
 						<span class="fa fa-search" aria-hidden="true"></span> <span>Find
 							owners</span>
 					</li>
 
+					<!-- menuItemフラグメントに要素を変換 -->
 					<li
 						th:replace="~{::menuItem ('/vets.html','vets','veterinarians','th-list','Veterinarians')}">
 						<span class="fa fa-th-list" aria-hidden="true"></span> <span>Veterinarians</span>
 					</li>
 
+					<!-- menuItemフラグメントに要素を変換 -->
 					<li
 						th:replace="~{::menuItem ('/oups','error','trigger a RuntimeException to see how it is handled','exclamation-triangle','Error')}">
 						<span class="fa exclamation-triangle" aria-hidden="true"></span> <span>Error</span>
@@ -73,6 +80,7 @@
 	<div class="container-fluid">
 		<div class="container xd-container">
 
+			<!-- fragmentの引数のtempleteの要素を挿入 -->
 			<th:block th:insert="${template}" />
 
 			<br /> <br />
