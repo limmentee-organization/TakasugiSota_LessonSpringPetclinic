@@ -18,8 +18,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
 
-@Entity
-@Table(name = "owners")
+@Entity //Entityクラス
+@Table(name = "owners") //エンティティにマッピングされる物理テーブル名を指定
 public class Owner extends Person {
 
 	@Column(name = "address")
@@ -35,9 +35,10 @@ public class Owner extends Person {
 	@Digits(fraction = 0, integer = 10)
 	private String telephone;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "owner_id")
-	@OrderBy("name")
+	//owner_idが一致するPetテーブルを全て取得
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) //全ての操作をカスケード、即座取得
+	@JoinColumn(name = "owner_id") //owner_idをもとにテーブル結合
+	@OrderBy("name") //nameを昇順ソート
 	private List<Pet> pets = new ArrayList<>();
 
 	public String getAddress() {
@@ -69,15 +70,22 @@ public class Owner extends Person {
 	}
 
 	public void addPet(Pet pet) {
+		//引数のpetクラスのidがnullの場合、petリストに要素を追加
 		if (pet.isNew()) {
 			getPets().add(pet);
 		}
 	}
 
+	/**
+	 * String引数のみの場合、無条件でnameが同値のものを取得する
+	 */
 	public Pet getPet(String name) {
 		return getPet(name, false);
 	}
 
+	/**
+	 * idでPetクラスを取得
+	 */
 	public Pet getPet(Integer id) {
 		for (Pet pet : getPets()) {
 			if (!pet.isNew()) {
@@ -91,11 +99,11 @@ public class Owner extends Person {
 	}
 
 	public Pet getPet(String name, boolean ignoreNew) {
-		name = name.toLowerCase();
+		name = name.toLowerCase();//大文字を全て小文字に変換
 		for (Pet pet : getPets()) {
 			String compName = pet.getName();
-			if (compName != null && compName.equalsIgnoreCase(name)) {
-				if (!ignoreNew || !pet.isNew()) {
+			if (compName != null && compName.equalsIgnoreCase(name)) {//大文字小文字区別せず同値判定を行う
+				if (!ignoreNew || !pet.isNew()) {//ignoreNewがfalseもしくpet.isNewがfalseの場合、そのPetクラスを返す
 					return pet;
 				}
 			}
@@ -103,6 +111,9 @@ public class Owner extends Person {
 		return null;
 	}
 
+	/**
+	 *toStriingのオーバーライド
+	 */
 	@Override
 	public String toString() {
 		return new ToStringCreator(this).append("id", this.getId())
@@ -116,12 +127,12 @@ public class Owner extends Person {
 	}
 
 	public void addVisit(Integer petId, Visit visit) {
-		Assert.notNull(petId, "Pet identifier must not be null!");
-		Assert.notNull(visit, "Visit must not be null!");
+		Assert.notNull(petId, "Pet identifier must not be null!");//nullの場合エクセプションを発生させる
+		Assert.notNull(visit, "Visit must not be null!");//nullの場合エクセプションを発生させる
 
 		Pet pet = getPet(petId);
 
-		Assert.notNull(pet, "Invalid Pet identifier!");
+		Assert.notNull(pet, "Invalid Pet identifier!");//nullの場合エクセプションを発生させる
 
 		pet.addVisit(visit);
 	}
