@@ -23,6 +23,7 @@ public class PetTypeFormatter implements Formatter<PetType> {
 		return petType.getName();
 	}
 
+	//textに選択したtypeが入ってくる理屈がわからない
 	@Override
 	public PetType parse(String text, Locale locale) throws ParseException {
 		Collection<PetType> findPetTypes = this.owners.findPetTypes();
