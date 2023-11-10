@@ -29,11 +29,13 @@ class PetController {
 		this.owners = owners;
 	}
 
+	//PetTypeクラスのCollectionのモデリング。
 	@ModelAttribute("types")
 	public Collection<PetType> populatePetTypes() {
 		return this.owners.findPetTypes();
 	}
 
+	//ownerクラスのモデリング。
 	@ModelAttribute("owner")
 	public Owner findOwner(@PathVariable("ownerId") int ownerId) {
 		Owner owner = this.owners.findById(ownerId);
@@ -43,6 +45,7 @@ class PetController {
 		return owner;
 	}
 
+	// Petクラスのモデリング。
 	@ModelAttribute("pet")
 	public Pet findPet(@PathVariable("ownerId") int ownerId,
 			@PathVariable(name = "petId", required = false) Integer petId) {
@@ -74,21 +77,28 @@ class PetController {
 
 	@PostMapping("/pets/new")
 	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, ModelMap model) {
-		if (StringUtils.hasLength(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null) {
+		if (StringUtils.hasLength(pet.getName()) && pet.isNew()
+				&& owner.getPet(pet.getName(), true) != null) {
+			/* StringUtils→ヌルポが発生しない
+			 * hasLength→nullでも空でもない
+			 */
 			result.rejectValue("name", "duplicate", "already exists");
 		}
 
 		LocalDate currentDate = LocalDate.now();
+		//登録された誕生日が現在日付より後の場合バリデーション
 		if (pet.getBirthDate() != null && pet.getBirthDate().isAfter(currentDate)) {
 			result.rejectValue("birthDate", "typeMismatch.birthDate");
 		}
 
+		//Petテーブルに1データ追加
 		owner.addPet(pet);
 		if (result.hasErrors()) {
 			model.put("pet", pet);
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		}
 
+		//追加した情報を保存
 		this.owners.save(owner);
 		return "redirect:/owners/{ownerId}";
 	}
@@ -105,6 +115,7 @@ class PetController {
 
 		String petName = pet.getName();
 
+		//同じ飼い主が同じ名前のペットを登録できない
 		if (StringUtils.hasLength(petName)) {
 			Pet existingPet = owner.getPet(petName.toLowerCase(), false);
 			if (existingPet != null && existingPet.getId() != pet.getId()) {
@@ -112,6 +123,7 @@ class PetController {
 			}
 		}
 
+		//登録された誕生日が現在日付より後の場合バリデーション
 		LocalDate currentDate = LocalDate.now();
 		if (pet.getBirthDate() != null && pet.getBirthDate().isAfter(currentDate)) {
 			result.rejectValue("birthDate", "typeMismatch.birthDate");
@@ -122,6 +134,7 @@ class PetController {
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 		}
 
+		//
 		owner.addPet(pet);
 		this.owners.save(owner);
 		return "redirect:/owners/{ownerId}";

@@ -30,10 +30,11 @@ public class Pet extends NamedEntity {
 	@JoinColumn(name = "type_id")
 	private PetType type;
 
+	//pet_idが一致するVisitテーブルを全て取得
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "pet_id")
-	@OrderBy("visit_date ASC")
-	private Set<Visit> visits = new LinkedHashSet<>();
+	@JoinColumn(name = "pet_id") //pet_idをもとにテーブル結合
+	@OrderBy("visit_date ASC") //visit_dateを昇順ソート
+	private Set<Visit> visits = new LinkedHashSet<>();//重複した値を持たないCollection、挿入順を維持
 
 	public LocalDate getBirthDate() {
 		return this.birthDate;
