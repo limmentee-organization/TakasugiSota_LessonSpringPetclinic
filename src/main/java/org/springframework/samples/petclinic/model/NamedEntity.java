@@ -4,7 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class NameEntity extends BaseEntity {
+public class NamedEntity extends BaseEntity {
 
 	@Column(name = "name")
 	private String name;
