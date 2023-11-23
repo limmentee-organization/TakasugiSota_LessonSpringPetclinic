@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
 @EnableCaching
-public class CacheConfiguration {
+class CacheConfiguration {
 
 	@Bean
 	public JCacheManagerCustomizer petclinicCacheConfigurationCustomizer() {
